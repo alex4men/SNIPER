@@ -233,7 +233,7 @@ def main():
             cls_dets = cls_dets[cls_dets[:, -1] > float(args.thresh), :]
             dets_nms.append(cls_dets)
 
-        print 'testing {}'.format(im_name)
+        print('testing {}'.format(im_name))
         # visualize
         im = cv2.cvtColor(eval_im_list[idx].astype(np.uint8), cv2.COLOR_BGR2RGB)
         vis_boxes(im_name, im, dets_nms, im_info_list_eval[idx][0][2], config, args.thresh, dir_names)
