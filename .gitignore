@@ -12,4 +12,4 @@ debug/*
 *.idx
 *.lst
 *.o
-demo/cache
+demo/cache/*
