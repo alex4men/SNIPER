@@ -5,6 +5,7 @@ import logging
 import pprint
 import cv2
 sys.path.insert(0, 'lib')
+sys.path.insert(0,'SNIPER-mxnet/python')
 from configs.faster.default_configs import config, update_config
 import numpy as np
 # get config
@@ -91,7 +92,7 @@ def main():
     # set model
     mod = MutableModule(sym, data_names, label_names, context=[mx.gpu(0)], max_data_shapes=max_data_shape)
     mod.bind(provide_data, provide_label, for_training=False)
-    mod.init_params(arg_params=arg_params, aux_params=aux_params)   
+    mod.init_params(arg_params=arg_params, aux_params=aux_params)
 
     # load the [index] - [class name] matching file
     with open("./data/ILSVRC2014_devkit/data/3kcls_1C_words.txt",'rb') as f:

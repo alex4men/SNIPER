@@ -5,6 +5,7 @@ import logging
 import pprint
 import cv2
 sys.path.insert(0, 'lib')
+sys.path.insert(0,'SNIPER-mxnet/python')
 from configs.faster.default_configs import config, update_config
 import numpy as np
 # get config
@@ -112,7 +113,7 @@ def main():
     # set model
     mod = MutableModule(sym, data_names, label_names, context=[mx.gpu(0)], max_data_shapes=max_data_shape)
     mod.bind(provide_data, provide_label, for_training=False)
-    mod.init_params(arg_params=arg_params, aux_params=aux_params)    
+    mod.init_params(arg_params=arg_params, aux_params=aux_params)
 
     # extract feature extraction; if feature already pickled, skip
     if os.path.exists("./demo/cache/indices.pkl") and os.path.exists("./demo/cache/features.pkl"):
@@ -175,7 +176,7 @@ def main():
         f4.close()
         f5 = open("./demo/cache/ob_scores.pkl", 'rb')
         objectness_scores = pickle.load(f5)
-        f5.close()        
+        f5.close()
 
     else:
         # get eval data based on the train val split
@@ -203,7 +204,7 @@ def main():
 
             if count % 100 == 0:
                 print(str(count) + '/' + str(total) + ': {:.4f} seconds spent.'.format(toc()))
-        
+
         # dump roi pooled features, rois and objectness scores for the eval images
         f3 = open("./demo/cache/eval_roipooled_features.pkl", 'wb')
         pickle.dump(roipooled_features, f3, protocol=2)
