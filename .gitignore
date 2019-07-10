@@ -13,3 +13,4 @@ debug/*
 *.lst
 *.o
 demo/cache/*
+demo/image_3k/*

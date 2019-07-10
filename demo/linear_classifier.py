@@ -17,7 +17,7 @@ def get_symbol(logger, num_of_classes):
     fc1 = mx.sym.FullyConnected(data=X, name='fc1', num_hidden=num_of_classes)
     softmax = mx.sym.SoftmaxOutput(data=fc1, label=Y, name='softmax')
 
-    model = mx.mod.Module(symbol=softmax, data_names=['data'], label_names=['softmax_label'], 
+    model = mx.mod.Module(symbol=softmax, data_names=['data'], label_names=['softmax_label'],
     						logger=logger, context=mx.gpu())
     return model
 
@@ -71,7 +71,7 @@ def data_iter(train_data, train_labels, eval_data, eval_labels, batch_size):
 	return train_iter, eval_iter
 
 
-def train_model(class_names, image_number_per_class, batch_size=100, learning_rate=0.0001, momentum=0.9, num_epoch=30):
+def train_model(class_names, image_number_per_class, batch_size=100, learning_rate=0.0001, momentum=0.9, num_epoch=30, val_imgs=40):
 	# input your class names here
     #class_names = ('gpu', 'ironman', 'ted', 'vr', 'fidgetspinner', \
     #                'garfield', 'bugatti', \
@@ -91,7 +91,7 @@ def train_model(class_names, image_number_per_class, batch_size=100, learning_ra
     kept_indices = [indices[i] for i in keep]
 
     # split train val sets
-    train_data, train_labels, eval_data, eval_labels, indices_eval, eval_list = split_train_val(kept_data, labels, kept_indices, num_of_classes, 40)
+    train_data, train_labels, eval_data, eval_labels, indices_eval, eval_list = split_train_val(kept_data, labels, kept_indices, num_of_classes, val_imgs)
     train_labels = np.array(train_labels)
     train_data = np.concatenate(train_data)
     eval_labels = np.array(eval_labels)
@@ -109,16 +109,16 @@ def train_model(class_names, image_number_per_class, batch_size=100, learning_ra
     logger.setLevel(logging.INFO)
 
     model = get_symbol(logger, num_of_classes)
-    model.fit(train_iter, eval_iter, optimizer='sgd', 
+    model.fit(train_iter, eval_iter, optimizer='sgd',
                 optimizer_params={'learning_rate':learning_rate, 'momentum': momentum},
             	num_epoch=num_epoch, eval_metric='acc', batch_end_callback = mx.callback.Speedometer(batch_size, 2))
-    
+
     return model, eval_list
 
 
 def classify_rois(model, roipooled_features):
     """
-    evaluate the rois 
+    evaluate the rois
     """
     rois_classification = []
 
