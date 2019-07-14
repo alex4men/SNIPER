@@ -11,6 +11,7 @@ from PIL import Image
 from bbox.bbox_transform import bbox_overlaps, ignore_overlaps
 from nms.nms import py_nms_wrapper, nmsp
 from multiprocessing import Pool
+from tqdm import tqdm
 
 
 def get_flipped_entry_outclass_wrapper(IMDB_instance, seg_rec):
@@ -222,7 +223,7 @@ class IMDB(object):
             flipped_poly = np.array(poly)
             flipped_poly[::2] = width - np.array(poly[::2]) - 1
             return flipped_poly.tolist()
-        
+
         print 'append flipped images to roidb'
         tmp = roidb[0]['boxes'].copy()
         entries = len(roidb)
@@ -404,7 +405,7 @@ class IMDB(object):
         :return: merged imdb
         """
         assert len(a) == len(b)
-        for i in range(len(a)):
+        for i in tqdm(range(len(a))):
             if 'proposal_scores' not in a[i]:
                 a[i]['proposal_scores'] = 10*np.ones(a[i]['boxes'].shape[0])
             if 'proposal_scores' not in b[i]:

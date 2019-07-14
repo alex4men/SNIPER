@@ -115,6 +115,12 @@ class coco(IMDB):
         assert os.path.exists(image_path), 'Path does not exist: {}'.format(image_path)
         return image_path
 
+    def image_path_from_fn(self, file_name):
+        """ example: images / train2014 / COCO_train2014_000000119993.jpg """
+        image_path = os.path.join(self.data_path, 'images', file_name)
+        assert os.path.exists(image_path), 'Path does not exist: {}'.format(image_path)
+        return image_path
+
     def gt_roidb(self):
         cache_file = os.path.join(self.cache_path, self.name + '_gt_roidb.pkl')
         index_file = os.path.join(self.cache_path, self.name + '_index_roidb.pkl')
@@ -231,7 +237,7 @@ class coco(IMDB):
 
         flag = True
 
-        roi_rec = {'image': self.image_path_from_index(index),
+        roi_rec = {'image': self.image_path_from_fn(im_ann['file_name']),
                    'height': height,
                    'width': width,
                    'boxes': boxes,
@@ -251,7 +257,7 @@ class coco(IMDB):
                     segs.append([])
                 else:
                     segs.append([np.array(p) for p in obj['segmentation'] if len(p)>=6])
-            
+
             roi_rec['gt_masks'] =  segs
 
             # Uncomment if you need to compute gts based on segmentation masks
@@ -259,7 +265,7 @@ class coco(IMDB):
             # roi_rec['mask_boxes'] = seg_boxes
         return roi_rec, flag
 
-    
+
 
     def evaluate_detections(self, detections, ann_type='bbox', all_masks=None, extra_path=''):
         """ detections_val2014_results.json """
