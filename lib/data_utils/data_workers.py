@@ -52,7 +52,10 @@ class im_worker(object):
         imp = data[0]
         flipped = data[2]
         pixel_means = self.cfg.network.PIXEL_MEANS
-        im = cv2.imread(imp, cv2.IMREAD_COLOR)
+        if '.pnm' in imp:
+            im = cv2.cvtColor(cv2.imread(self.roidb[i]['image']), cv2.COLOR_BAYER_BG2RGB)
+        else:
+            im = cv2.imread(imp, cv2.IMREAD_COLOR)
         # Flip the image
         if flipped:
             im = im[:, ::-1, :]
