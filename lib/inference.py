@@ -23,7 +23,7 @@ class Tester(object):
     def __init__(self, module, imdb, roidb, test_iter, cfg, rcnn_output_names=None,rpn_output_names=None,
                  logger=None, batch_size=None):
         self.test_iter = test_iter
-        
+
         # Make sure that iterator is instnace of Prefetching iterator
         if test_iter and not isinstance(test_iter, PrefetchingIter):
             self.test_iter = PrefetchingIter(self.test_iter)
@@ -55,7 +55,7 @@ class Tester(object):
         self.nms_worker = nms_worker(cfg.TEST.NMS, cfg.TEST.NMS_SIGMA)
         self.batch_size = batch_size
         self.roidb = roidb
-        self.verbose = len(roidb) > 1
+        self.verbose = False
         self.thread_pool = None
 
         if not self.batch_size:
@@ -320,6 +320,7 @@ class Tester(object):
 def detect_scale_worker(arguments):
     [scale, nbatch, context, config, sym_def,\
      roidb, imdb, arg_params, aux_params, vis] = arguments
+    print('roidb:', len(roidb))
     print('Performing inference for scale: {}'.format(scale))
     nGPUs= len(context)
     sym_inst = sym_def(n_proposals=400, test_nbatch=nbatch)
@@ -437,7 +438,7 @@ def imdb_proposal_extraction_wrapper(sym_def, config, imdb, roidb, context, arg_
             for j in range(config.TEST.CONCURRENT_JOBS):
                 parallel_args.append([scale, nbatch, context, config, sym_def, \
                 roidbs[j], imdb, arg_params, aux_params, vis])
-                    
+
             proposal_list = pool.map(proposal_scale_worker, parallel_args)
             tmp_props = []
             for prop in proposal_list:
@@ -467,6 +468,6 @@ def imdb_proposal_extraction_wrapper(sym_def, config, imdb, roidb, context, arg_
     save_path = os.path.join(config.TEST.PROPOSAL_SAVE_PATH, '{}_{}_rpn.pkl'.format(config.dataset.dataset.upper(),
                                                                                         config.dataset.test_image_set))
     with open(save_path, 'wb') as file:
-         cPickle.dump(final_proposals, file)    
+         cPickle.dump(final_proposals, file)
 
     print('All done!')

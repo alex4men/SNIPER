@@ -117,7 +117,10 @@ class coco(IMDB):
 
     def image_path_from_fn(self, file_name):
         """ example: images / train2014 / COCO_train2014_000000119993.jpg """
-        image_path = os.path.join(self.data_path, 'images', file_name)
+        if file_name[0] == '/':
+            image_path = file_name
+        else:
+            image_path = os.path.join(self.data_path, 'images', file_name)
         assert os.path.exists(image_path), 'Path does not exist: {}'.format(image_path)
         return image_path
 
@@ -274,9 +277,10 @@ class coco(IMDB):
             os.makedirs(res_folder)
         res_file = os.path.join(res_folder, 'detections_%s_results.json' % self.image_set)
         self._write_coco_results(detections, res_file, ann_type, all_masks)
-        if 'test' not in self.image_set:
-            info_str = self._do_python_eval(res_file, res_folder, ann_type)
-            return info_str
+        # if 'test' not in self.image_set:
+            # info_str = self._do_python_eval(res_file, res_folder, ann_type)
+            # return info_str
+            return ''
 
     def evaluate_sds(self, all_boxes, all_masks):
         info_str = self.evaluate_detections(all_boxes, 'segm', all_masks)
