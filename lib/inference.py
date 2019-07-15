@@ -134,7 +134,7 @@ class Tester(object):
         if self.logger: self.logger.info(print_str)
 
     def aggregate(self, scale_cls_dets, vis=False, cache_name='cache', vis_path=None, vis_name=None,
-                  pre_nms_db_divide=10, vis_ext='.png'):
+                  pre_nms_db_divide=10, vis_ext='.jpg'):
         n_scales = len(scale_cls_dets)
         assert n_scales == len(self.cfg.TEST.VALID_RANGES), 'A valid range should be specified for each test scale'
         all_boxes = [[[] for _ in range(self.num_images)] for _ in range(self.num_classes)]
@@ -190,11 +190,15 @@ class Tester(object):
                 if not os.path.isdir(visualization_path):
                     os.makedirs(visualization_path)
                 import cv2
-                im = cv2.cvtColor(cv2.imread(self.roidb[i]['image']), cv2.COLOR_BGR2RGB)
+                if 'pnm' in self.roidb[i]['image']:
+                    vis_name = self.roidb[i]['image'].split('/')[-1].split('.')[0]
+                    im = cv2.cvtColor(cv2.imread(self.roidb[i]['image'], cv2.IMREAD_GRAYSCALE), cv2.COLOR_BAYER_BG2BGR)
+                else:
+                    im = cv2.cvtColor(cv2.imread(self.roidb[i]['image']), cv2.COLOR_BGR2RGB)
                 visualize_dets(im,
                                [[]] + [all_boxes[j][i] for j in range(1, self.num_classes)],
                                1.0,
-                               self.cfg.network.PIXEL_MEANS, self.class_names, threshold=0.5,
+                               self.cfg.network.PIXEL_MEANS, self.class_names, threshold=0.3,
                                save_path=os.path.join(visualization_path, '{}{}'.format(vis_name if vis_name else i,
                                                                                          vis_ext)), transform=False)
 
