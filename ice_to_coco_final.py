@@ -90,5 +90,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print('Converting' args.name)
+    print('Converting', args.name)
     convert_tsv2coco(args.in_path, args.tsvfiles, args.out_path, args.batch, args.stride, args.name)

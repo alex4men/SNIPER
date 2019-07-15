@@ -277,10 +277,9 @@ class coco(IMDB):
             os.makedirs(res_folder)
         res_file = os.path.join(res_folder, 'detections_%s_results.json' % self.image_set)
         self._write_coco_results(detections, res_file, ann_type, all_masks)
-        # if 'test' not in self.image_set:
-            # info_str = self._do_python_eval(res_file, res_folder, ann_type)
-            # return info_str
-            return ''
+        if 'test' not in self.image_set:
+            info_str = self._do_python_eval(res_file, res_folder, ann_type)
+            return info_str
 
     def evaluate_sds(self, all_boxes, all_masks):
         info_str = self.evaluate_detections(all_boxes, 'segm', all_masks)

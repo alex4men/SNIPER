@@ -55,7 +55,7 @@ class Tester(object):
         self.nms_worker = nms_worker(cfg.TEST.NMS, cfg.TEST.NMS_SIGMA)
         self.batch_size = batch_size
         self.roidb = roidb
-        self.verbose = False
+        self.verbose = len(roidb) > 1
         self.thread_pool = None
 
         if not self.batch_size:
